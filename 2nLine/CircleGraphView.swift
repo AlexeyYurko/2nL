@@ -17,11 +17,11 @@ class CircleGraphView: UIView {
     }
     
     var arcWidth:CGFloat = 8.0
-    var arcColor = UIColor.darkGrayColor()
-    var arcBackgroundColor = UIColor.darkGrayColor()
+    var arcColor = UIColor.darkGray
+    var arcBackgroundColor = UIColor.darkGray
     var isPie: Bool = false
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         // Drawing code
         
         //Important constants for circle
@@ -31,14 +31,14 @@ class CircleGraphView: UIView {
         
         
         //find the centerpoint of the rect
-        let centerPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect))
+        let centerPoint = CGPoint(x: rect.midX, y: rect.midY)
         
         //define the radius by the smallest side of the view
         var radius:CGFloat = 0.0
-        if CGRectGetWidth(rect) > CGRectGetHeight(rect){
-            radius = (CGRectGetWidth(rect) - arcWidth) / 2.0 * 0.85
+        if rect.width > rect.height{
+            radius = (rect.width - arcWidth) / 2.0 * 0.85
         } else {
-            radius = (CGRectGetHeight(rect) - arcWidth) / 2.0 * 0.85
+            radius = (rect.height - arcWidth) / 2.0 * 0.85
         }
         
         //starting point for all drawing code is getting the context.
@@ -48,26 +48,26 @@ class CircleGraphView: UIView {
         //     let colorspace = CGColorSpaceCreateDeviceRGB()
         
         //set line attributes
-        CGContextSetLineWidth(context, arcWidth)
-        CGContextSetLineCap(context, .Round)
-        CGContextSetStrokeColorWithColor(context, arcColor.CGColor)
+        context?.setLineWidth(arcWidth)
+        context?.setLineCap(.round)
+        context?.setStrokeColor(arcColor.cgColor)
         
         if isPie {
-            CGContextSetFillColorWithColor(context, arcColor.CGColor)
-            CGContextMoveToPoint(context, centerPoint.x, centerPoint.y)
-            CGContextAddArc(context, centerPoint.x, centerPoint.y, radius, start, end, 0)
+            context?.setFillColor(arcColor.cgColor)
+            context?.move(to: CGPoint(x: centerPoint.x, y: centerPoint.y))
+            context?.addArc(center:CGPoint(x: centerPoint.x, y: centerPoint.y), radius: radius, startAngle: start, endAngle: end, clockwise: false)
             
-            CGContextSetShadowWithColor(context, CGSizeMake(3, 3), 2, UIColor.grayColor().CGColor)
+            context?.setShadow(offset: CGSize(width: 3, height: 3), blur: 2, color: UIColor.gray.cgColor)
             
-            CGContextFillPath(context)
+            context?.fillPath()
         }   else {
-            CGContextSetStrokeColorWithColor(context, arcColor.CGColor)
-            CGContextSetLineWidth(context, arcWidth * 0.8 )
-            CGContextAddArc(context, centerPoint.x, centerPoint.y, radius, start, end, 0)
+            context?.setStrokeColor(arcColor.cgColor)
+            context?.setLineWidth(arcWidth * 0.8 )
+            context?.addArc(center:CGPoint(x: centerPoint.x, y: centerPoint.y), radius: radius, startAngle: start, endAngle: end, clockwise: false)
             
-            CGContextSetShadowWithColor(context, CGSizeMake(3, 3), 2, UIColor.grayColor().CGColor)
+            context?.setShadow(offset: CGSize(width: 3, height: 3), blur: 2, color: UIColor.gray.cgColor)
             
-            CGContextStrokePath(context)
+            context?.strokePath()
         }
         
     }

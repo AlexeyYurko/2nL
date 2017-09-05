@@ -10,7 +10,7 @@ import SpriteKit
 
 let BlockSize:CGFloat = 30
 
-let TickLengthLevelOne = NSTimeInterval(5)
+let TickLengthLevelOne = TimeInterval(5)
 
 class GameScene: SKScene {
     
@@ -22,8 +22,8 @@ class GameScene: SKScene {
     var circleTimer:((CGFloat) -> ())?
     
     // таймер
-    var timer = NSTimer()
-    let timeInterval:NSTimeInterval = 0.01
+    var timer = Timer()
+    let timeInterval:TimeInterval = 0.01
 
     var timeCount = TickLengthLevelOne
     var timeInSeconds = TickLengthLevelOne
@@ -62,15 +62,15 @@ class GameScene: SKScene {
         gameLayer.addChild(blockLayer)
     }
     
-    override func update(currentTime: CFTimeInterval) {
+    override func update(_ currentTime: TimeInterval) {
         /* Called before each frame is rendered */
     }
     
     // запуск таймера, с обнулением счётчика
     func startTimer() {
         timeCount = timeInSeconds
-        if !timer.valid{ //prevent more than one timer on the thread
-                timer = NSTimer.scheduledTimerWithTimeInterval(timeInterval,
+        if !timer.isValid{ //prevent more than one timer on the thread
+                timer = Timer.scheduledTimer(timeInterval: timeInterval,
                 target: self,
                 selector: #selector(GameScene.timerDidEnd),
                 userInfo: nil,
@@ -85,8 +85,8 @@ class GameScene: SKScene {
     
     // снятие паузы, без обнуления счетчика = продолжение таймера !!! УРА!!!
     func unPauseTimer() {
-        if !timer.valid {
-            timer = NSTimer.scheduledTimerWithTimeInterval(timeInterval,
+        if !timer.isValid {
+            timer = Timer.scheduledTimer(timeInterval: timeInterval,
                                                            target: self,
                                                            selector: #selector(GameScene.timerDidEnd),
                                                            userInfo: nil,
@@ -95,7 +95,7 @@ class GameScene: SKScene {
     }
     
     // таймер короткого интервала отработал, отсчитываем "тик", если в полном цикле ушли в ноль - бросаем фигуру, иначе просто перерисовываем круг
-    func timerDidEnd(timer:NSTimer){
+    func timerDidEnd(_ timer:Timer){
             timeCount = timeCount - timeInterval
             if timeCount <= 0 {  //test for target time reached.
                 timer.invalidate()
@@ -106,10 +106,10 @@ class GameScene: SKScene {
             }
         }
     
-    override func didMoveToView(view: SKView) {
+    override func didMove(to view: SKView) {
        }
     
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
        /* Called when a touch begins */
               
     }  
@@ -120,35 +120,35 @@ class GameScene: SKScene {
     }
    
     //добавляем превью
-    func addPreviewShapeToScene(shape:Shape, completion:() -> ()) {
+    func addPreviewShapeToScene(_ shape:Shape, completion:@escaping () -> ()) {
         for block in shape.blocks {
             let sprite = SKSpriteNode(imageNamed: imageName(block.tile))
             sprite.position = pointForColumn(block.column, row:block.row - 2)
             blockLayer.addChild(sprite)
             block.sprite = sprite
-            let moveAction = SKAction.moveTo(pointForColumn(block.column, row: block.row), duration: NSTimeInterval(0.2))
-            moveAction.timingMode = .EaseOut
+            let moveAction = SKAction.move(to: pointForColumn(block.column, row: block.row), duration: TimeInterval(0.2))
+            moveAction.timingMode = .easeOut
 
-            sprite.runAction(SKAction.group([moveAction]))
+            sprite.run(SKAction.group([moveAction]))
         }
-        runAction(SKAction.waitForDuration(0.4), completion: completion)
+        run(SKAction.wait(forDuration: 0.4), completion: completion)
     }
     
     //переносим превью на поле
-    func movePreviewShape(shape:Shape, completion:() -> ()) {
+    func movePreviewShape(_ shape:Shape, completion:@escaping () -> ()) {
         for block in shape.blocks {
             let sprite = block.sprite!
             let moveTo = pointForColumn(block.column, row:block.row)
-            let moveToAction:SKAction = SKAction.moveTo(moveTo, duration: 0.1)
-            moveToAction.timingMode = .EaseOut
-            sprite.runAction(
+            let moveToAction:SKAction = SKAction.move(to: moveTo, duration: 0.1)
+            moveToAction.timingMode = .easeOut
+            sprite.run(
                 SKAction.group([moveToAction]))
           }
-        runAction(SKAction.waitForDuration(0.1), completion: completion)
+        run(SKAction.wait(forDuration: 0.1), completion: completion)
     }
     
     //определение координат для вывода спрайта
-    func pointForColumn(column: Int, row: Int) -> CGPoint {
+    func pointForColumn(_ column: Int, row: Int) -> CGPoint {
         let newRow = row - 1
         let newColumn = Double(column) + 0.5
         
@@ -162,7 +162,7 @@ class GameScene: SKScene {
     }
     
     //вывод поля из набора, что приходит при вызове (set<Field>) для поля
-    func showField(tiles: Set<Field>) {
+    func showField(_ tiles: Set<Field>) {
         fieldLayer.removeAllChildren()
         for block in tiles {
             let sprite = SKSpriteNode(imageNamed: fieldName(block.isSpawn))
@@ -173,23 +173,23 @@ class GameScene: SKScene {
     }
    
     //стираем совпадающие блоки
-    func animateMatchedTiles(lines: Set<Line>, completion: () -> ()) {
+    func animateMatchedTiles(_ lines: Set<Line>, completion: @escaping () -> ()) {
         for line in lines {
             for tile in line.tiles {
                 if let sprite = tile.sprite {
-                    if sprite.actionForKey("removing") == nil {
+                    if sprite.action(forKey: "removing") == nil {
                         let newPosition = pointForColumn(randomMove(), row: randomMove())
-                        let moveAround = SKAction.moveTo(newPosition, duration: 0.2)
-                        moveAround.timingMode = .EaseIn
-                        let scaleAction = SKAction.scaleTo(5, duration: 0.2)
-                        scaleAction.timingMode = .EaseOut
-                        sprite.runAction(SKAction.sequence([moveAround, scaleAction, SKAction.removeFromParent()]),
+                        let moveAround = SKAction.move(to: newPosition, duration: 0.2)
+                        moveAround.timingMode = .easeIn
+                        let scaleAction = SKAction.scale(to: 5, duration: 0.2)
+                        scaleAction.timingMode = .easeOut
+                        sprite.run(SKAction.sequence([moveAround, scaleAction, SKAction.removeFromParent()]),
                                          withKey:"removing")
                     }
                 }
             }
         }
-        runAction(SKAction.waitForDuration(0.4), completion: completion)
+        run(SKAction.wait(forDuration: 0.4), completion: completion)
     }
     
     // для анимации стирания
@@ -198,25 +198,25 @@ class GameScene: SKScene {
     }
     
     //анимация перемещения фигуры
-    func redrawShape(shape:Shape, completion:() -> ()) {
+    func redrawShape(_ shape:Shape, completion:@escaping () -> ()) {
         for block in shape.blocks {
             let sprite = block.sprite!
             let moveTo = pointForColumn(block.column, row:block.row)
-            let moveToAction:SKAction = SKAction.moveTo(moveTo, duration: 0.05)
-            moveToAction.timingMode = .EaseOut
+            let moveToAction:SKAction = SKAction.move(to: moveTo, duration: 0.05)
+            moveToAction.timingMode = .easeOut
             if block == shape.blocks.last {
-                sprite.runAction(moveToAction, completion: completion)
+                sprite.run(moveToAction, completion: completion)
             } else {
-                sprite.runAction(moveToAction)
+                sprite.run(moveToAction)
             }
         }
     }
     
     //перерисовываем спрайты при сдвиге цвета, при перемещении, !без анимации! с удалением!!! и новым созданием, криво, но быстро, при замене texture почему-то некрасиво
-    func redrawShapeFast(shape:Shape, completion:() -> ()) {
+    func redrawShapeFast(_ shape:Shape, completion:() -> ()) {
         for block in shape.blocks {
             var sprite = block.sprite!
-            sprite.runAction(SKAction.removeFromParent())
+            sprite.run(SKAction.removeFromParent())
             sprite = SKSpriteNode(imageNamed: imageName(block.tile))
             sprite.position = pointForColumn(block.column, row:block.row)
             blockLayer.addChild(sprite)
@@ -225,7 +225,7 @@ class GameScene: SKScene {
     }
     
     //shake screen
-   func shakeCamera(duration:CGFloat) {
+   func shakeCamera(_ duration:CGFloat) {
             let amplitudeX:CGFloat = 10;
             let amplitudeY:CGFloat = 6;
             let numberOfShakes = duration / 0.04;
@@ -234,44 +234,44 @@ class GameScene: SKScene {
                 // build a new random shake and add it to the list
                 let moveX = CGFloat(arc4random_uniform(UInt32(amplitudeX))) - CGFloat(amplitudeX / 2);
                 let moveY = CGFloat(arc4random_uniform(UInt32(amplitudeY))) - CGFloat(amplitudeY / 2);
-                let shakeAction = SKAction.moveByX(moveX, y: moveY, duration: 0.02);
-                shakeAction.timingMode = SKActionTimingMode.EaseOut;
+                let shakeAction = SKAction.moveBy(x: moveX, y: moveY, duration: 0.02);
+                shakeAction.timingMode = SKActionTimingMode.easeOut;
                 actionsArray.append(shakeAction);
-                actionsArray.append(shakeAction.reversedAction());
+                actionsArray.append(shakeAction.reversed());
             }
             
             let actionSeq = SKAction.sequence(actionsArray);
-            gameLayer.runAction(actionSeq);
+            gameLayer.run(actionSeq);
         }
     
     //рисуем падение блоков
-    func animateCollapsingLines(linesToRemove: Array<TileType>, completion:() -> ()) {
+    func animateCollapsingLines(_ linesToRemove: Array<TileType>, completion:@escaping () -> ()) {
         for tile in linesToRemove {
             if let sprite = tile.sprite {
-                if sprite.actionForKey("removing") == nil {
+                if sprite.action(forKey: "removing") == nil {
                     let time = Double((arc4random_uniform(10))/8)
              //       let scaleAction = SKAction.scaleTo(0.1, duration: time)
                     let newPosition = pointForColumn(tile.column, row: -15)
-                    let moveDown = SKAction.moveTo(newPosition, duration: time)
+                    let moveDown = SKAction.move(to: newPosition, duration: time)
             //        scaleAction.timingMode = .EaseOut
-                    moveDown.timingMode = .EaseOut
-                    sprite.runAction(SKAction.sequence([moveDown, SKAction.removeFromParent()]),
+                    moveDown.timingMode = .easeOut
+                    sprite.run(SKAction.sequence([moveDown, SKAction.removeFromParent()]),
                                      withKey:"removing")
                 }
             }
         }
-        runAction(SKAction.waitForDuration(0.1), completion:completion)
+        run(SKAction.wait(forDuration: 0.1), completion:completion)
     }
    
     //проигрываем звук
-    func playSound(sound: SKAction) {
-        runAction(sound)
+    func playSound(_ sound: SKAction) {
+        run(sound)
     }
       
 }
 
 // определение названия файла спрайта (вместо enum)
-func imageName(block: Int) -> String {
+func imageName(_ block: Int) -> String {
     switch block {
     case 1: return "blue"
     case 2: return "green"
@@ -284,7 +284,7 @@ func imageName(block: Int) -> String {
 }
 
 //определение плитки
-    func fieldName(spawn: Bool) -> String {
+    func fieldName(_ spawn: Bool) -> String {
         switch spawn {
         case true: return "spawn"
         case false: return "free"

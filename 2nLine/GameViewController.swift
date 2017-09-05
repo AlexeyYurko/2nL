@@ -36,7 +36,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         
         // Configure the view.
         let skView = self.view as! SKView
-        skView.multipleTouchEnabled = false
+        skView.isMultipleTouchEnabled = false
         skView.showsFPS = true
         skView.showsNodeCount = true
         
@@ -46,7 +46,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         view.addGestureRecognizer(tap)
         
         //device recognition
-        let device = UIDevice.currentDevice().deviceType
+        let device = UIDevice.current.deviceType
         print(device)
         
         //level init
@@ -56,7 +56,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         skView.ignoresSiblingOrder = true
         
         scene = GameScene(size: skView.bounds.size)
-        scene.backgroundColor = UIColor.lightGrayColor()
+        scene.backgroundColor = UIColor.lightGray
         
         scene.level = level!
         scene.tick = didTick
@@ -69,7 +69,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         nLine.beginGame()
         
         /* Set the scale mode to scale to fit the window */
-        scene.scaleMode = .AspectFill
+        scene.scaleMode = .aspectFill
         
         skView.presentScene(scene)
         
@@ -101,32 +101,32 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
             scene.unPauseTimer()
         }
         
-        scene.view?.paused = isPause
+        scene.view?.isPaused = isPause
         
     }
     
     //одно нажатие - вращаем
-    func singleTap(sender: AnyObject?) {
+    func singleTap(_ sender: AnyObject?) {
         if !isPause {
         nLine.rotateShape()
         }
     }
     
     //два нажатия - ставим
-    func doubleTap(sender: AnyObject?) {
+    func doubleTap(_ sender: AnyObject?) {
         if !isPause {
         nLine.dropShape()
         }
     }
     
     //двигаем, 
-    @IBAction func didPan(sender: UIPanGestureRecognizer) {
+    @IBAction func didPan(_ sender: UIPanGestureRecognizer) {
 
         if !isPause {
         
         var direction = true // 1 - horizontal, 0 - vertical
             
-        let currentPoint = sender.translationInView(self.view)
+        let currentPoint = sender.translation(in: self.view)
          
         if let originalPoint = panPointReference {
             
@@ -139,7 +139,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
             
             if (abs(currentPoint.y - originalPoint.y) > (BlockSize * 1.05)) {
 
-                if sender.velocityInView(self.view).y > CGFloat(0) {
+                if sender.velocity(in: self.view).y > CGFloat(0) {
                     nLine.moveShapeUp()
                     panPointReference = currentPoint
                 } else {
@@ -149,7 +149,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
                 }
             } else {
             if (abs(currentPoint.x - originalPoint.x) > (BlockSize * 1.05)) {
-                if sender.velocityInView(self.view).x > CGFloat(0) {
+                if sender.velocity(in: self.view).x > CGFloat(0) {
                     nLine.moveShapeRight()
                     panPointReference = currentPoint
                 } else {
@@ -158,7 +158,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
                         }
                     }
                 }
-            } else if sender.state == .Began {
+            } else if sender.state == .began {
                     panPointReference = currentPoint
                     }
         }
@@ -166,7 +166,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
     }
     
     //начало игры, делегат NLine класс
-    func gameDidBegin(nLine: NLine) {
+    func gameDidBegin(_ nLine: NLine) {
         
         levelLabel.text = "\(nLine.round)"
         scoreLabel.text = "\(nLine.score)"
@@ -175,7 +175,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         //рисуем поле
         let newField = level.newField()
         scene.showField(newField)
-        view.userInteractionEnabled = true
+        view.isUserInteractionEnabled = true
 
         // The following is false when restarting a new game
         if nLine.nextShape != nil && nLine.nextShape!.blocks[0].sprite == nil {
@@ -188,7 +188,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
     }
     
     //рисуем время
-    func didCircle(inputTick: CGFloat) {
+    func didCircle(_ inputTick: CGFloat) {
         let time = inputTick
         circleGraph.endArc = CGFloat(time)
         circleGraph.isPie = false
@@ -209,15 +209,15 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         self.scene.addPreviewShapeToScene(newShapes.nextShape!) {}
         self.scene.movePreviewShape(fallingShape) {
 
-        self.view.userInteractionEnabled = true
+        self.view.isUserInteractionEnabled = true
          
         self.scene.startTimer()
         }
     }
   
     // конец игры - некуда поставить фигуру
-    func gameDidEnd(nLine: NLine) {
-        view.userInteractionEnabled = false
+    func gameDidEnd(_ nLine: NLine) {
+        view.isUserInteractionEnabled = false
         
         scene.stopTimer()
         
@@ -228,11 +228,11 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         }
    
     // постановка фигуры на поле, проверка на совпадающие линии
-    func gameShapeDidLand(nLine: NLine) {
+    func gameShapeDidLand(_ nLine: NLine) {
         
         scene.stopTimer()
         
-        self.view.userInteractionEnabled = false
+        self.view.isUserInteractionEnabled = false
       
         let removedLines = nLine.removeMatches()
         if removedLines.count > 0 {
@@ -246,11 +246,11 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
     }
     
     // отработка перемещения фигуры
-    func gameShapeDidMove(nLine: NLine) {
+    func gameShapeDidMove(_ nLine: NLine) {
     scene.redrawShapeFast(nLine.fallingShape!) {}
     }
         
-    func gameShapeDidDrop(nLine: NLine) {
+    func gameShapeDidDrop(_ nLine: NLine) {
         
         if !isPause {
         
@@ -265,11 +265,11 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         }
     }
     
-    func colorShiftMake(nLine: NLine) {
+    func colorShiftMake(_ nLine: NLine) {
         scene.redrawShapeFast(nLine.fallingShape!){}
     }
 
-    func gameDidLevelUp(nLine: NLine) {
+    func gameDidLevelUp(_ nLine: NLine) {
         levelLabel.text = "\(nLine.round)"
         
         if scene.timeInSeconds >= 2 {
@@ -285,11 +285,11 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         return true
     } */
 
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        if UIDevice.currentDevice().userInterfaceIdiom == .Phone {
-            return .AllButUpsideDown
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            return .allButUpsideDown
         } else {
-            return .All
+            return .all
         }
     }
 
@@ -298,7 +298,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         // Release any cached data, images, etc that aren't in use.
     }
 
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     

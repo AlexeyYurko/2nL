@@ -3,14 +3,13 @@
 //  2nLine
 //
 //Created by Howard Yang on 08/22/2015.
-//  Copyright © 2016 Alexey Yurko. All rights reserved.
 //
 
 import UIKit
 
-public class SingleDoubleTapGestureRecognizer: UITapGestureRecognizer {
+open class SingleDoubleTapGestureRecognizer: UITapGestureRecognizer {
     var targetDelegate: SingleDoubleTapGestureRecognizerDelegate
-    public var duration: CFTimeInterval = 0.3 {
+    open var duration: CFTimeInterval = 0.3 {
         didSet {
             self.targetDelegate.duration = duration
         }
@@ -34,41 +33,38 @@ class SingleDoubleTapGestureRecognizerDelegate: NSObject {
         self.doubleAction = doubleAction
     }
     
-    func fakeAction(g: UITapGestureRecognizer) {
+    func fakeAction(_ g: UITapGestureRecognizer) {
         tapCount = tapCount + 1
         if tapCount == 1 {
             delayHelper(duration, task: {
                 if self.tapCount == 1 {
-                    NSThread.detachNewThreadSelector(self.singleAction, toTarget:self.target, withObject: g)
+                    Thread.detachNewThreadSelector(self.singleAction, toTarget:self.target, with: g)
                 }
                 else if self.tapCount == 2 {
-                    NSThread.detachNewThreadSelector(self.doubleAction, toTarget:self.target, withObject: g)
+                    Thread.detachNewThreadSelector(self.doubleAction, toTarget:self.target, with: g)
                 }
                 self.tapCount = 0
             })
         }
     }
-    typealias DelayTask = (cancel : Bool) -> ()
+    typealias DelayTask = (_ cancel : Bool) -> ()
     
-    func delayHelper(time:NSTimeInterval, task:()->()) ->  DelayTask? {
+    func delayHelper(_ time:TimeInterval, task: @escaping ()->()) ->  DelayTask? {
         
-        func dispatch_later(block:()->()) {
-            dispatch_after(
-                dispatch_time(
-                    DISPATCH_TIME_NOW,
-                    Int64(time * Double(NSEC_PER_SEC))),
-                dispatch_get_main_queue(),
-                block)
+        func dispatch_later(_ block:@escaping ()->()) {
+            DispatchQueue.main.asyncAfter(
+                deadline: DispatchTime.now() + Double(Int64(time * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC),
+                execute: block)
         }
         
-        var closure: dispatch_block_t? = task
+        var closure: ()->() = task
         var result: DelayTask?
         
         let delayedClosure: DelayTask = {
             cancel in
             if let internalClosure = closure {
                 if (cancel == false) {
-                    dispatch_async(dispatch_get_main_queue(), internalClosure);
+                    DispatchQueue.main.async(execute: internalClosure);
                 }
             }
             closure = nil
@@ -79,14 +75,14 @@ class SingleDoubleTapGestureRecognizerDelegate: NSObject {
         
         dispatch_later {
             if let delayedClosure = result {
-                delayedClosure(cancel: false)
+                delayedClosure(false)
             }
         }
         
         return result;
     }
     
-    func cancel(task:DelayTask?) {
-        task?(cancel: true)
+    func cancel(_ task:DelayTask?) {
+        task?(true)
     }
 }

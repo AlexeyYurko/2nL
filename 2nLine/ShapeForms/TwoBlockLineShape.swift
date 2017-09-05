@@ -10,10 +10,10 @@ class TwoBlockLineShape:Shape {
     
     override var blockRowColumnPositions: [Orientation: Array<(columnDiff: Int, rowDiff: Int)>] {
         return [
-            Orientation.Zero:       [(0, 1), (1, 1)],
-            Orientation.Ninety:     [(1, 1), (1, 0)],
-            Orientation.OneEighty:  [(1, 0), (0, 0)],
-            Orientation.TwoSeventy: [(0, 0), (0, 1)]
+            Orientation.zero:       [(0, 1), (1, 1)],
+            Orientation.ninety:     [(1, 1), (1, 0)],
+            Orientation.oneEighty:  [(1, 0), (0, 0)],
+            Orientation.twoSeventy: [(0, 0), (0, 1)]
         ]
     }
     

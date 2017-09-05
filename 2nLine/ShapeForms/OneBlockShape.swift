@@ -10,10 +10,10 @@ class OneBlockShape:Shape {
     
     override var blockRowColumnPositions: [Orientation: Array<(columnDiff: Int, rowDiff: Int)>] {
         return [
-            Orientation.Zero:       [(0, 0)],
-            Orientation.Ninety:     [(0, 0)],
-            Orientation.OneEighty:  [(0, 0)],
-            Orientation.TwoSeventy: [(0, 0)]
+            Orientation.zero:       [(0, 0)],
+            Orientation.ninety:     [(0, 0)],
+            Orientation.oneEighty:  [(0, 0)],
+            Orientation.twoSeventy: [(0, 0)]
         ]
     }
     

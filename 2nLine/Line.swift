@@ -12,15 +12,15 @@ class Line: Hashable {
     var tiles = [TileType]()
     
     enum LineType: CustomStringConvertible {
-        case Horizontal
-        case Vertical
-        case Diagonal
+        case horizontal
+        case vertical
+        case diagonal
         
         var description: String {
             switch self {
-            case .Horizontal: return "Horizontal"
-            case .Vertical: return "Vertical"
-            case .Diagonal: return "Diagonal"
+            case .horizontal: return "Horizontal"
+            case .vertical: return "Vertical"
+            case .diagonal: return "Diagonal"
             }
         }
     }
@@ -31,7 +31,7 @@ class Line: Hashable {
         self.lineType = lineType
     }
     
-    func addTile(tile: TileType) {
+    func addTile(_ tile: TileType) {
         tiles.append(tile)
     }
     

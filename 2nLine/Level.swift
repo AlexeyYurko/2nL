@@ -15,7 +15,7 @@ let NumRows = 10
 //достаточно неуместное творение, надо убирать, упрощать
 //описание класса Уровень(хм), состоящего из массива 10*10 типа Tile
 class Level {
-    private var ground = Array2D<Field>(columns: NumColumns, rows: NumRows)
+    fileprivate var ground = Array2D<Field>(columns: NumColumns, rows: NumRows)
    
     //вызываем очистку поля
     func newField() -> Set<Field> {
@@ -23,7 +23,7 @@ class Level {
     }
    
     //формируем поле
-    private func createField() -> Set<Field> {
+    fileprivate func createField() -> Set<Field> {
         var set = Set<Field>()
         var spawn: Bool
         

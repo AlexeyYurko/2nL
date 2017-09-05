@@ -25,25 +25,25 @@ let LevelThreshold = 1000
 
 protocol NLineDelegate {
     // Invoked when the current round ends
-    func gameDidEnd(nLine: NLine)
+    func gameDidEnd(_ nLine: NLine)
     
     // Invoked after a new game has begun
-    func gameDidBegin(nLine: NLine)
+    func gameDidBegin(_ nLine: NLine)
     
     // Invoked when the falling shape has become part of the game board
-    func gameShapeDidLand(nLine: NLine)
+    func gameShapeDidLand(_ nLine: NLine)
     
     // Invoked when the falling shape has changed its location
-    func gameShapeDidMove(nLine: NLine)
+    func gameShapeDidMove(_ nLine: NLine)
     
     // Invoked when the falling shape has changed its location after being dropped
-    func gameShapeDidDrop(nLine: NLine)
+    func gameShapeDidDrop(_ nLine: NLine)
     
     //color shift
-    func colorShiftMake(nLine: NLine)
+    func colorShiftMake(_ nLine: NLine)
     
     // Invoked when the game has reached a new level
-    func gameDidLevelUp(nLine: NLine)
+    func gameDidLevelUp(_ nLine: NLine)
 }
 
 class NLine {
@@ -120,7 +120,7 @@ class NLine {
     }
     
     //проверка на возможность установки блока, применяется в процедуре detectPossibleSpawnPoint, для определения места установки в рамках spawn zone
-    func detectPlacement(X: Int, Y: Int) -> Bool {
+    func detectPlacement(_ X: Int, Y: Int) -> Bool {
 
         guard let shape = fallingShape else {
             return false
@@ -142,7 +142,7 @@ class NLine {
     
     
     // для detectPossibleSpawnPoint и вообще
-    func random(max: Int) -> Int {
+    func random(_ max: Int) -> Int {
         return Int(arc4random_uniform(UInt32(max)))
     }
     
@@ -323,7 +323,7 @@ class NLine {
     
 //************************
     // обнуление ячеек из набора line
-    private func removeTiles(lines: Set<Line>) {
+    fileprivate func removeTiles(_ lines: Set<Line>) {
         for blocks in lines {
             for block in blocks.tiles {
                 scoreForRemove() //попутно считаем баллы
@@ -367,19 +367,19 @@ class NLine {
     }
         
     //поиск диагональный линий
-    private func detectDiagonalMatches() -> Set<Line> {
+    fileprivate func detectDiagonalMatches() -> Set<Line> {
         var set = Set<Line>()
        
         //  /
-        for var row in 0.stride(to: NumRows - 2, by: 1) {
-            for var column in 0.stride(to: NumColumns - 2, by: 1) {
+        for var row in stride(from: 0, to: NumRows - 2, by: 1) {
+            for var column in stride(from: 0, to: NumColumns - 2, by: 1) {
                 if let tile = blockArray[column, row]
                 {
                     let matchType = tile.tile
                     if blockArray[column + 1, row+1]?.tile == matchType &&
                         blockArray[column + 2, row+2]?.tile == matchType
                     {
-                        let line = Line(lineType: .Diagonal)
+                        let line = Line(lineType: .diagonal)
                         
                         var workColumn = column
                         var workRow = row
@@ -400,14 +400,14 @@ class NLine {
         
         //  \
         
-        for var row in 0.stride(to: NumRows - 2, by: 1) {
-            for var column in (2..<NumColumns).reverse() {
+        for var row in stride(from: 0, to: NumRows - 2, by: 1) {
+            for var column in (2..<NumColumns).reversed() {
                 if let tile = blockArray[column, row]
                 {
                     let matchType = tile.tile
                     if blockArray[column - 1, row + 1]?.tile == matchType &&
                         blockArray[column - 2, row + 2]?.tile == matchType {
-                        let line = Line(lineType: .Diagonal)
+                        let line = Line(lineType: .diagonal)
                         
                         var workColumn = column
                         var workRow = row
@@ -431,16 +431,16 @@ class NLine {
     
     
     //поиск горизонтальных линий
-    private func detectHorizontalMatches() -> Set<Line> {
+    fileprivate func detectHorizontalMatches() -> Set<Line> {
         var set = Set<Line>()
         for row in 0..<NumRows {
-            for var column in 0.stride(to: NumColumns - 2, by: 1) {
+            for var column in stride(from: 0, to: NumColumns - 2, by: 1) {
                 if let tile = blockArray[column, row]
                  {
                     let matchType = tile.tile
                     if blockArray[column + 1, row]?.tile == matchType &&
                         blockArray[column + 2, row]?.tile == matchType {
-                        let line = Line(lineType: .Horizontal)
+                        let line = Line(lineType: .horizontal)
                         repeat {
                             line.addTile(blockArray[column, row]!)
                             column += 1
@@ -457,16 +457,16 @@ class NLine {
     }
     
     //поиск вертикальных линий
-    private func detectVerticalMatches() -> Set<Line> {
+    fileprivate func detectVerticalMatches() -> Set<Line> {
         var set = Set<Line>()
         for column in 0..<NumColumns {
-            for var row in 0.stride(to: NumRows - 2, by: 1) {
+            for var row in stride(from: 0, to: NumRows - 2, by: 1) {
                 if let tile = blockArray[column, row]
                 {
                     let matchType = tile.tile
                     if blockArray[column, row + 1]?.tile == matchType &&
                         blockArray[column, row + 2]?.tile == matchType {
-                        let line = Line(lineType: .Vertical)
+                        let line = Line(lineType: .vertical)
                         repeat {
                             line.addTile(blockArray[column, row]!)
                             row += 1
