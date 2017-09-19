@@ -16,7 +16,7 @@
 
 // conversion to swift-style guide
 
-//
+// convert to swift 4
 
 /* что я хочу видеть (не в порядке приоритета):
  заставку
