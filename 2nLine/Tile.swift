@@ -34,5 +34,5 @@ func ==(lhs: TileType, rhs: TileType) -> Bool {
 }
 
 func randomForTile() -> Int {
-    return (rawValue: Int(arc4random_uniform(TileColors))+1)
+    return (rawValue: Int(arc4random_uniform(TileColors))+1) as! Int
 }

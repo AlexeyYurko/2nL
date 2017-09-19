@@ -95,7 +95,7 @@ class GameScene: SKScene {
     }
     
     // таймер короткого интервала отработал, отсчитываем "тик", если в полном цикле ушли в ноль - бросаем фигуру, иначе просто перерисовываем круг
-    func timerDidEnd(_ timer:Timer){
+    @objc func timerDidEnd(_ timer:Timer){
             timeCount = timeCount - timeInterval
             if timeCount <= 0 {  //test for target time reached.
                 timer.invalidate()

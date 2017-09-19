@@ -33,7 +33,7 @@ class SingleDoubleTapGestureRecognizerDelegate: NSObject {
         self.doubleAction = doubleAction
     }
     
-    func fakeAction(_ g: UITapGestureRecognizer) {
+    @objc func fakeAction(_ g: UITapGestureRecognizer) {
         tapCount = tapCount + 1
         if tapCount == 1 {
             delayHelper(duration, task: {

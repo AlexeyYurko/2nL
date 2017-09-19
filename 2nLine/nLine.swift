@@ -96,7 +96,7 @@ class NLine {
         for diffY in -1...2 {
             for diffX in -1...2 {
                 if detectPlacement(diffX, Y: diffY) {
-                    diffsXY.append(X: diffX, Y: diffY)
+                    diffsXY.append((X: diffX, Y: diffY))
                 }
             }
         }

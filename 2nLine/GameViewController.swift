@@ -106,14 +106,14 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
     }
     
     //одно нажатие - вращаем
-    func singleTap(_ sender: AnyObject?) {
+    @objc func singleTap(_ sender: AnyObject?) {
         if !isPause {
         nLine.rotateShape()
         }
     }
     
     //два нажатия - ставим
-    func doubleTap(_ sender: AnyObject?) {
+    @objc func doubleTap(_ sender: AnyObject?) {
         if !isPause {
         nLine.dropShape()
         }
