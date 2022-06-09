@@ -7,10 +7,6 @@
 
 import Foundation
 
-/*let NumColumns = 10
-let NumRows = 20
-*/
-
 let StartingColumn = 4
 let StartingRow = 4
 
@@ -48,7 +44,7 @@ protocol NLineDelegate {
 
 class NLine {
     
-    // игровое поле, tiles.
+    // playfield and tiles
     var blockArray:Array2D<TileType>
     
     var nextShape:Shape?
@@ -75,21 +71,19 @@ class NLine {
         fallingShape = nextShape
         nextShape = Shape.random(PreviewColumn, startingRow: PreviewRow)
         fallingShape?.moveTo(StartingColumn, row: StartingRow)
-        
-     // guard detectIllegalPlacement() == false else {
-        
+                
         if !detectPossibleSpawnPoint() {
             nextShape = fallingShape
             nextShape!.moveTo(PreviewColumn, row: PreviewRow)
             endGame()
             return (nil, nil)
             }
-       // }
+
         return (fallingShape, nextShape)
     }
     
     
-    //смотрим на возможность посадки фигуры на свободное поле в spawn zone
+    // look at the possibility of landing a figure on a free field in the spawn zone
     func detectPossibleSpawnPoint() -> Bool {
         var diffsXY: [(X:Int, Y: Int)] = [(0, 0)]
         
@@ -119,7 +113,7 @@ class NLine {
     return false
     }
     
-    //проверка на возможность установки блока, применяется в процедуре detectPossibleSpawnPoint, для определения места установки в рамках spawn zone
+    // check for possible placement of a block, used in the detectPossibleSpawnPoint procedure, to determine the placement within the spawn zone
     func detectPlacement(_ X: Int, Y: Int) -> Bool {
 
         guard let shape = fallingShape else {
@@ -140,13 +134,11 @@ class NLine {
             return true
     }
     
-    
-    // для detectPossibleSpawnPoint и вообще
     func random(_ max: Int) -> Int {
         return Int(arc4random_uniform(UInt32(max)))
     }
     
-    //проверка на возможность установки блока, применяется по всему телу
+    // check to see if the block can be installed, applied throughout the body
     func detectIllegalPlacement() -> Bool {
         guard let shape = fallingShape else {
             return false
@@ -180,7 +172,6 @@ class NLine {
     }
     
     func dropShape() {
-      //  delegate?.gameShapeDidDrop(self)
              if !detectIllegalPlacement() {
             delegate?.gameShapeDidDrop(self)
             } else {
@@ -259,7 +250,6 @@ class NLine {
         delegate?.gameShapeDidMove(self)
     }
     
-    //сдвиг цвета
     func colorShift() {
         
         var tileArray: [Int] = []
@@ -286,7 +276,7 @@ class NLine {
         delegate?.colorShiftMake(self)
     }
     
-    // обнуление поля при нажатии Новая Игра
+    // Resetting the field when you press New Game
     func removeBlocksWhenNewGamePressed() -> Array<TileType> {
         var allBlocks = Array<TileType>()
         for row in 0..<NumRows {
@@ -306,7 +296,7 @@ class NLine {
         return allBlocks
     }
     
-    //обнуление поля в случае конца игры, когда некуда или не успел поставить фигуру
+    // Resetting the field when the game ends, when there is nowhere or no time to put a figure
     func removeAllBlocks() -> Array<TileType> {
         var allBlocks = Array<TileType>()
         for row in 0..<NumRows {
@@ -321,12 +311,11 @@ class NLine {
         return allBlocks
     }
     
-//************************
-    // обнуление ячеек из набора line
+    // resetting the cells from the line set
     fileprivate func removeTiles(_ lines: Set<Line>) {
         for blocks in lines {
             for block in blocks.tiles {
-                scoreForRemove() //попутно считаем баллы
+                scoreForRemove() // count the scores at the same time
                 blockArray[block.column, block.row] = nil
                 }
             }
@@ -343,7 +332,7 @@ class NLine {
         
     }
 
-    // определяем максимальное кол-во фигур
+    // determine the maximum number of figures
     func roundShapeCap() {
         switch round {
         case 1...2: NumShapeTypes = 4
@@ -353,7 +342,7 @@ class NLine {
         }
     }
     
-    //поиск линий - общий
+    // line search - general
     func removeMatches() -> Set<Line> {
         let horizontalChains = detectHorizontalMatches()
         let verticalChains = detectVerticalMatches()
@@ -366,7 +355,7 @@ class NLine {
         return unitedChains
     }
         
-    //поиск диагональный линий
+    // searching for diagonal lines
     fileprivate func detectDiagonalMatches() -> Set<Line> {
         var set = Set<Line>()
        
@@ -397,9 +386,7 @@ class NLine {
             }
             row += 1
         }
-        
-        //  \
-        
+    
         for var row in stride(from: 0, to: NumRows - 2, by: 1) {
             for var column in (2..<NumColumns).reversed() {
                 if let tile = blockArray[column, row]
@@ -430,7 +417,7 @@ class NLine {
     }
     
     
-    //поиск горизонтальных линий
+    // searching for horizontal lines
     fileprivate func detectHorizontalMatches() -> Set<Line> {
         var set = Set<Line>()
         for row in 0..<NumRows {
@@ -456,7 +443,7 @@ class NLine {
         return set
     }
     
-    //поиск вертикальных линий
+    // searching for vertical lines
     fileprivate func detectVerticalMatches() -> Set<Line> {
         var set = Set<Line>()
         for column in 0..<NumColumns {

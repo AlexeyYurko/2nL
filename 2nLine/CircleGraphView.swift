@@ -25,7 +25,7 @@ class CircleGraphView: UIView {
         // Drawing code
         
         //Important constants for circle
-        let fullCircle = 2.0 * CGFloat(.pi)
+        let fullCircle = 2.0 * CGFloat(Double.pi)
         let start:CGFloat = -0.25 * fullCircle
         let end:CGFloat = endArc * fullCircle + start
         

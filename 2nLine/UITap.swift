@@ -57,7 +57,7 @@ class SingleDoubleTapGestureRecognizerDelegate: NSObject {
                 execute: block)
         }
         
-        var closure: ()->() = task
+        var closure: Optional = task
         var result: DelayTask?
         
         let delayedClosure: DelayTask = {

@@ -15,7 +15,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
     var scene: GameScene!
     var nLine: NLine!
     
-    // флаг паузы
+    // pause flag
     var isPause: Bool = false
     
     //preload sounds
@@ -75,14 +75,14 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         
     }
     
-    //сдвиг цвета
+    // colour shift
     @IBAction func pressedShift() {
         if !isPause {
         nLine.colorShift()
         }
     }
     
-    //новая игра
+    // new game
     @IBAction func pressedNewGame() {
        // view.userInteractionEnabled = false
         scene.stopTimer()
@@ -91,7 +91,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
     }
     
     
-    //пауза
+    // pause
     @IBAction func pressedPause() {
         isPause = !isPause
 
@@ -105,21 +105,21 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         
     }
     
-    //одно нажатие - вращаем
+    // one tap for rotate
     @objc func singleTap(_ sender: AnyObject?) {
         if !isPause {
         nLine.rotateShape()
         }
     }
     
-    //два нажатия - ставим
+    // two taps for placing
     @objc func doubleTap(_ sender: AnyObject?) {
         if !isPause {
         nLine.dropShape()
         }
     }
     
-    //двигаем, 
+    // moving
     @IBAction func didPan(_ sender: UIPanGestureRecognizer) {
 
         if !isPause {
@@ -165,14 +165,13 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         
     }
     
-    //начало игры, делегат NLine класс
     func gameDidBegin(_ nLine: NLine) {
         
         levelLabel.text = "\(nLine.round)"
         scoreLabel.text = "\(nLine.score)"
         scene.timeInSeconds = TickLengthLevelOne
         
-        //рисуем поле
+        // Drawing the field
         let newField = level.newField()
         scene.showField(newField)
         view.isUserInteractionEnabled = true
@@ -187,7 +186,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         }
     }
     
-    //рисуем время
+    // Drawing the timer
     func didCircle(_ inputTick: CGFloat) {
         let time = inputTick
         circleGraph.endArc = CGFloat(time)
@@ -199,7 +198,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         nLine.dropShape()
     }
     
-    //следуюшая фигура
+    // next figure
     func nextShape() {
         let newShapes = nLine.newShape()
         guard let fallingShape = newShapes.fallingShape else {
@@ -215,7 +214,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
         }
     }
   
-    // конец игры - некуда поставить фигуру
+    // end of game - nowhere to put the figure
     func gameDidEnd(_ nLine: NLine) {
         view.isUserInteractionEnabled = false
         
@@ -227,7 +226,7 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
             nLine.beginGame() }
         }
    
-    // постановка фигуры на поле, проверка на совпадающие линии
+    // placing a figure on the field, checking for matching lines
     func gameShapeDidLand(_ nLine: NLine) {
         
         scene.stopTimer()
@@ -241,11 +240,11 @@ class GameViewController: UIViewController, NLineDelegate, UIGestureRecognizerDe
             scene.animateMatchedTiles(removedLines) {}
         }
         
-   //     scene.shakeCamera(0.1) //смотрится плохо
+   //     scene.shakeCamera(0.1) // looks not very good
             nextShape()
     }
     
-    // отработка перемещения фигуры
+    // work out how to move the figure
     func gameShapeDidMove(_ nLine: NLine) {
     scene.redrawShapeFast(nLine.fallingShape!) {}
     }

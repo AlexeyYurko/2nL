@@ -18,18 +18,17 @@
 
 // convert to swift 4
 
-/* что я хочу видеть (не в порядке приоритета):
- заставку
- выбор игра/настройки
- иконки паузы / новой игры (релоад) / настроек / сдвига цветов вместо текстовых полей
- ввод имени игрока после проигрыша
- интеграцию с гейм центром
- отойти от спрайтов (спрайты - хорошо, но что делать с разрешениями экранов?)
- добавить музыку (неактуально)
- сделать нормальное управление - сейчас двигать очень неудобно, "срывается" постоянно
- код причесать под гайды
- ввести локальную таблицу рекордов
- добавить рекламу - в идеале - ненавязчивую
- грамотно ввести градацию сложности (фигуры/цвета) - линейную или волнами
+/* what I want to see (not in order of priority):
+ Logo
+ game/settings selection
+ icons for pause / new game (reload) / settings / colour shift instead of text boxes
+ player name input after losing
+ game centre integration
+ move away from sprites (sprites are fine, but what about screen resolutions?)
+ add music (irrelevant)
+ make normal controls - now move very uncomfortable, "torn" constantly
+ code should be adjusted to the guides
+ add a local scoreboard
+ introduce a gradation of complexity (shapes/colours) - linear or in waves
  
  */

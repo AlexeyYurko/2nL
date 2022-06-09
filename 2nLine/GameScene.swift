@@ -21,7 +21,6 @@ class GameScene: SKScene {
     var tick:(() -> ())?
     var circleTimer:((CGFloat) -> ())?
     
-    // таймер
     var timer = Timer()
     let timeInterval:TimeInterval = 0.01
 
@@ -30,11 +29,9 @@ class GameScene: SKScene {
     
     var level: Level!
     
-    //определение слоев, один для "игры" (поверх фона, у меня пропущено), другой для блоков-фишек
+    // definition of layers, one for "game" (over the background, omitted), the other for token blocks
     let gameLayer = SKNode()
-    //поле
     let fieldLayer = SKNode()
-    //блоки
     let blockLayer = SKNode()
   
     required init?(coder aDecoder: NSCoder) {
@@ -45,13 +42,12 @@ class GameScene: SKScene {
         super.init(size: size)
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
-        //вот ЗДЕСЬ* вставить фон
+        // here* to insert the background
         
         
-        //добавляем игровой слой
         addChild(gameLayer)
         
-        //определяем место для блоков (позицию)
+        // define the location for the blocks (position)
         let layerPosition = CGPoint(
         x: -tileWidth * CGFloat(NumColumns) / 2-CGFloat(NumColumns) / 2,
         y: -tileHeight * CGFloat(NumRows) / 2)
@@ -66,7 +62,7 @@ class GameScene: SKScene {
         /* Called before each frame is rendered */
     }
     
-    // запуск таймера, с обнулением счётчика
+    // timer start, with counter reset
     func startTimer() {
         timeCount = timeInSeconds
         if !timer.isValid{ //prevent more than one timer on the thread
@@ -78,12 +74,11 @@ class GameScene: SKScene {
         }
     }
     
-    // остановка таймера
     func stopTimer() {
         timer.invalidate()
     }
     
-    // снятие паузы, без обнуления счетчика = продолжение таймера !!! УРА!!!
+    // pause removal, without resetting the counter = continuation of the timer !!! HOORAY!!!
     func unPauseTimer() {
         if !timer.isValid {
             timer = Timer.scheduledTimer(timeInterval: timeInterval,
@@ -94,7 +89,7 @@ class GameScene: SKScene {
         }
     }
     
-    // таймер короткого интервала отработал, отсчитываем "тик", если в полном цикле ушли в ноль - бросаем фигуру, иначе просто перерисовываем круг
+    // short interval timer has worked, count down the "tick", if the full cycle has reached zero, we drop the figure, otherwise we just redraw the circle
     @objc func timerDidEnd(_ timer:Timer){
             timeCount = timeCount - timeInterval
             if timeCount <= 0 {  //test for target time reached.
@@ -114,12 +109,10 @@ class GameScene: SKScene {
               
     }  
     
-    //очищаем все блоки на сцене
     func removeAllBlocksSprites() {
         blockLayer.removeAllChildren()
     }
    
-    //добавляем превью
     func addPreviewShapeToScene(_ shape:Shape, completion:@escaping () -> ()) {
         for block in shape.blocks {
             let sprite = SKSpriteNode(imageNamed: imageName(block.tile))
@@ -134,7 +127,6 @@ class GameScene: SKScene {
         run(SKAction.wait(forDuration: 0.4), completion: completion)
     }
     
-    //переносим превью на поле
     func movePreviewShape(_ shape:Shape, completion:@escaping () -> ()) {
         for block in shape.blocks {
             let sprite = block.sprite!
@@ -147,7 +139,7 @@ class GameScene: SKScene {
         run(SKAction.wait(forDuration: 0.1), completion: completion)
     }
     
-    //определение координат для вывода спрайта
+    // defining the coordinates for the sprite output
     func pointForColumn(_ column: Int, row: Int) -> CGPoint {
         let newRow = row - 1
         let newColumn = Double(column) + 0.5
@@ -161,7 +153,7 @@ class GameScene: SKScene {
             y: CGFloat(newRow)*tileHeight+CGFloat(newRow)) */
     }
     
-    //вывод поля из набора, что приходит при вызове (set<Field>) для поля
+    // field output from the set, which comes with call (set<Field>) for the field
     func showField(_ tiles: Set<Field>) {
         fieldLayer.removeAllChildren()
         for block in tiles {
@@ -172,7 +164,7 @@ class GameScene: SKScene {
         }
     }
    
-    //стираем совпадающие блоки
+    // erase matched blocks
     func animateMatchedTiles(_ lines: Set<Line>, completion: @escaping () -> ()) {
         for line in lines {
             for tile in line.tiles {
@@ -192,12 +184,12 @@ class GameScene: SKScene {
         run(SKAction.wait(forDuration: 0.4), completion: completion)
     }
     
-    // для анимации стирания
+    // for the erase animation
     func randomMove() -> Int {
        return Int(arc4random_uniform(15))-Int(arc4random_uniform(15))
     }
     
-    //анимация перемещения фигуры
+    // figure movement animation
     func redrawShape(_ shape:Shape, completion:@escaping () -> ()) {
         for block in shape.blocks {
             let sprite = block.sprite!
@@ -212,7 +204,7 @@ class GameScene: SKScene {
         }
     }
     
-    //перерисовываем спрайты при сдвиге цвета, при перемещении, !без анимации! с удалением!!! и новым созданием, криво, но быстро, при замене texture почему-то некрасиво
+    // redraw sprites when shifting colours, when moving, !without animation!! with deletion!! and new creation, crooked but fast, when replacing texture for some reason ugly
     func redrawShapeFast(_ shape:Shape, completion:() -> ()) {
         for block in shape.blocks {
             var sprite = block.sprite!
@@ -224,7 +216,7 @@ class GameScene: SKScene {
          }
     }
     
-    //shake screen
+    // shake screen
    func shakeCamera(_ duration:CGFloat) {
             let amplitudeX:CGFloat = 10;
             let amplitudeY:CGFloat = 6;
@@ -244,7 +236,7 @@ class GameScene: SKScene {
             gameLayer.run(actionSeq);
         }
     
-    //рисуем падение блоков
+    // drawing the fall of the blocks
     func animateCollapsingLines(_ linesToRemove: Array<TileType>, completion:@escaping () -> ()) {
         for tile in linesToRemove {
             if let sprite = tile.sprite {
@@ -263,14 +255,13 @@ class GameScene: SKScene {
         run(SKAction.wait(forDuration: 0.1), completion:completion)
     }
    
-    //проигрываем звук
     func playSound(_ sound: SKAction) {
         run(sound)
     }
       
 }
 
-// определение названия файла спрайта (вместо enum)
+// sprite filename definition (instead of enum) (don't remember why)
 func imageName(_ block: Int) -> String {
     switch block {
     case 1: return "blue"
@@ -283,7 +274,7 @@ func imageName(_ block: Int) -> String {
     }
 }
 
-//определение плитки
+// tile definition
     func fieldName(_ spawn: Bool) -> String {
         switch spawn {
         case true: return "spawn"

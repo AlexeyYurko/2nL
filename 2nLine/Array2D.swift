@@ -7,7 +7,6 @@
 //
 
 
-//описание структуры двухмерного массива
 struct Array2D<T> {
     let columns: Int
     let rows: Int
@@ -21,7 +20,6 @@ struct Array2D<T> {
     }
     
     
-    //обращение к массиву get/set
     subscript(column: Int, row: Int) -> T? {
         get {
             return array[row*columns + column]
