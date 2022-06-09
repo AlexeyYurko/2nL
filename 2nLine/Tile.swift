@@ -10,7 +10,7 @@ import SpriteKit
 
 let TileColors: UInt32 = 6 // max = 6
 
-//класс плитка, описание блока - координаты, цвет, спрайт
+// TileType class, block description - coordinates, colour, sprite
 class TileType: Hashable {
     var column: Int
     var row: Int
@@ -34,5 +34,5 @@ func ==(lhs: TileType, rhs: TileType) -> Bool {
 }
 
 func randomForTile() -> Int {
-    return (rawValue: Int(arc4random_uniform(TileColors))+1) as! Int
+    return Int(arc4random_uniform(TileColors))+1
 }

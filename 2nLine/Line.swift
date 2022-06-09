@@ -7,7 +7,7 @@
 //
 
 
-//работа с поиском последовательностей
+// work with sequence search
 class Line: Hashable {
     var tiles = [TileType]()
     

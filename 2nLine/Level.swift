@@ -12,17 +12,16 @@ let NumColumns = 10
 let NumRows = 10
 
 
-//достаточно неуместное творение, надо убирать, упрощать
-//описание класса Уровень(хм), состоящего из массива 10*10 типа Tile
+// rather inappropriate creation, should be removed, simplify the description of the Level class, consisting of a 10*10 array of type Tile
 class Level {
     fileprivate var ground = Array2D<Field>(columns: NumColumns, rows: NumRows)
    
-    //вызываем очистку поля
+    // call for clearing the field
     func newField() -> Set<Field> {
         return createField()
     }
    
-    //формируем поле
+    // generate a field
     fileprivate func createField() -> Set<Field> {
         var set = Set<Field>()
         var spawn: Bool

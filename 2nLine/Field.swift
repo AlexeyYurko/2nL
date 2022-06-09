@@ -8,7 +8,7 @@
 
 import SpriteKit
 
-//класс поле, описание блока - координаты, что хранится, является ли полем для "рождения"
+// class field, description of the block - coordinates, what is stored, whether it is a "spawn" field
 class Field: Hashable {
     var column: Int
     var row: Int
